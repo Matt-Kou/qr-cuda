@@ -63,7 +63,7 @@ int main()
     int rows = 4;
     int cols = 4;
     int min_dim = (rows < cols) ? rows : cols;
-    int matrix_size = rows * cols * sizeof(float);
+    size_t matrix_size = rows * cols * sizeof(float);
 
     // Allocate memory for the matrix on the host
     float *host_matrix = (float *)malloc(matrix_size);
@@ -86,7 +86,8 @@ int main()
     cublasCreate(&handle);
 
     printf("Matrix on GPU:\n");
-    printMatrix(device_matrix, rows, cols);
+    cudaMemcpy(host_matrix, device_matrix, matrix_size, cudaMemcpyHostToDevice);
+    printMatrix(host_matrix, rows, cols);
 
     // Perform QR factorization
     for (int k = 0; k < min_dim; k++)
