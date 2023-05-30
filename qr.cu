@@ -29,27 +29,24 @@ void printMatrix(float *matrix, int rows, int cols)
 }
 
 // QR factorization kernel
-__global__ void qrFactorization(float *matrix, int rows, int cols, int k)
-{
+__global__ void qrFactorization(float* matrix, int rows, int cols, int k) {
     int i = blockIdx.y * blockDim.y + threadIdx.y;
     int j = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (i < rows && j < cols && j >= k)
-    {
+    if (i < rows && j < cols && j >= k) {
         float sum = 0.0f;
-        for (int l = 0; l < rows; l++)
-        {
+        for (int l = k; l < rows; l++) {  // Update loop bounds from k to rows
             sum += matrix[l * cols + k] * matrix[l * cols + j];
         }
 
         __syncthreads();
 
-        for (int l = 0; l < rows; l++)
-        {
+        for (int l = k; l < rows; l++) {  // Update loop bounds from k to rows
             matrix[l * cols + j] -= (matrix[l * cols + k] * sum);
         }
     }
 }
+
 
 int main()
 {
