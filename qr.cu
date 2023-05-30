@@ -21,13 +21,18 @@ void printMatrix(float *matrix, int rows, int cols)
 // Function to generate a random matrix
 void generateRandomMatrix(float *matrix, int rows, int cols)
 {
-    curandGenerator_t prng;
-    curandCreateGenerator(&prng, CURAND_RNG_PSEUDO_DEFAULT);
-    curandSetPseudoRandomGeneratorSeed(prng, time(NULL)); // Use current time as the seed
-    curandGenerateUniform(prng, matrix, rows * cols);
-    curandDestroyGenerator(prng);
-
-    printMatrix(matrix, rows, cols);
+    // curandGenerator_t prng;
+    // curandCreateGenerator(&prng, CURAND_RNG_PSEUDO_DEFAULT);
+    // curandSetPseudoRandomGeneratorSeed(prng, time(NULL)); // Use current time as the seed
+    // curandGenerateUniform(prng, matrix, rows * cols);
+    // curandDestroyGenerator(prng);
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            matrix[j * cols + i] = (i == j) ? 1 : 0;
+        }
+    }
 }
 
 // QR factorization kernel
