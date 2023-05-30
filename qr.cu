@@ -85,6 +85,9 @@ int main()
     cublasHandle_t handle;
     cublasCreate(&handle);
 
+    printf("Matrix on GPU:\n");
+    printMatrix(device_matrix, rows, cols);
+
     // Perform QR factorization
     for (int k = 0; k < min_dim; k++)
     {
