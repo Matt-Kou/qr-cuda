@@ -11,6 +11,8 @@ void generateRandomMatrix(float* matrix, int rows, int cols) {
     curandSetPseudoRandomGeneratorSeed(prng, time(NULL));  // Use current time as the seed
     curandGenerateUniform(prng, matrix, rows * cols);
     curandDestroyGenerator(prng);
+
+    printMatrix(matrix, rows, cols);
 }
 
 // Function to print a matrix
