@@ -5,11 +5,10 @@
 #include <curand.h>
 
 // Function to generate a random matrix
-void generateRandomMatrix(float *matrix, int rows, int cols)
-{
+void generateRandomMatrix(float* matrix, int rows, int cols) {
     curandGenerator_t prng;
     curandCreateGenerator(&prng, CURAND_RNG_PSEUDO_DEFAULT);
-    curandSetPseudoRandomGeneratorSeed(prng, 123456789);
+    curandSetPseudoRandomGeneratorSeed(prng, time(NULL));  // Use current time as the seed
     curandGenerateUniform(prng, matrix, rows * cols);
     curandDestroyGenerator(prng);
 }
