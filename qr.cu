@@ -61,7 +61,7 @@ __global__ void qrFactorization(float *matrix, int rows, int cols, int k)
 int main()
 {
     int rows = 4;
-    int cols = 3;
+    int cols = 4;
     int min_dim = (rows < cols) ? rows : cols;
     int matrix_size = rows * cols * sizeof(float);
 
