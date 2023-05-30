@@ -104,17 +104,18 @@ int main()
             float alpha = 1.0f / cublasSnrm2(handle, rows - k, column, stride, NULL);
             cublasSscal(handle, rows - k, &alpha, column, stride);
         }
-
-        // Copy the result back to the host
-        cudaMemcpy(host_matrix, device_matrix, matrix_size, cudaMemcpyDeviceToHost);
-
-        printf("Q matrix:\n");
-        printMatrix(host_matrix, rows, cols);
-
-        // Clean up
-        cudaFree(device_matrix);
-        cublasDestroy(handle);
-        free(host_matrix);
-
-        return 0;
     }
+
+    // Copy the result back to the host
+    cudaMemcpy(host_matrix, device_matrix, matrix_size, cudaMemcpyDeviceToHost);
+
+    printf("Q matrix:\n");
+    printMatrix(host_matrix, rows, cols);
+
+    // Clean up
+    cudaFree(device_matrix);
+    cublasDestroy(handle);
+    free(host_matrix);
+
+    return 0;
+}
