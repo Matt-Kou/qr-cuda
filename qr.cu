@@ -47,16 +47,14 @@ __global__ void qrFactorization(float* matrix, int rows, int cols, int k) {
     }
 }
 
-
-int main()
-{
+int main() {
     int rows = 4;
     int cols = 3;
     int min_dim = (rows < cols) ? rows : cols;
     int matrix_size = rows * cols * sizeof(float);
 
     // Allocate memory for the matrix on the host
-    float *host_matrix = (float *)malloc(matrix_size);
+    float* host_matrix = (float*)malloc(matrix_size);
 
     // Generate a random matrix
     generateRandomMatrix(host_matrix, rows, cols);
@@ -65,8 +63,8 @@ int main()
     printMatrix(host_matrix, rows, cols);
 
     // Allocate memory for the matrix on the device
-    float *device_matrix;
-    cudaMalloc((void **)&device_matrix, matrix_size);
+    float* device_matrix;
+    cudaMalloc((void**)&device_matrix, matrix_size);
 
     // Copy the matrix from host to device
     cudaMemcpy(device_matrix, host_matrix, matrix_size, cudaMemcpyHostToDevice);
@@ -76,26 +74,21 @@ int main()
     cublasCreate(&handle);
 
     // Perform QR factorization
-    for (int k = 0; k < min_dim; k++)
-    {
+    for (int k = 0; k < min_dim; k++) {
         dim3 blockSize(32, 32);
         dim3 gridSize((cols + blockSize.x - 1) / blockSize.x, (rows + blockSize.y - 1) / blockSize.y);
 
         qrFactorization<<<gridSize, blockSize>>>(device_matrix, rows, cols, k);
 
         // Update Q matrix (optional)
-        if (k < rows - 1)
-        {
-            float *column = device_matrix + k * cols + k;
+        if (k < rows - 1) {
+            float* column = device_matrix + k * cols + k;
             int stride = 1;
             float norm;
             cublasSnrm2(handle, rows - k, column, stride, &norm);
-            if (column[0] >= 0)
-            {
+            if (column[0] >= 0) {
                 column[0] += norm;
-            }
-            else
-            {
+            } else {
                 column[0] -= norm;
             }
             float alpha = 1.0f / cublasSnrm2(handle, rows - k, column, stride, NULL);
