@@ -90,8 +90,9 @@ int main()
         if (k < rows - 1)
         {
             float *column = device_matrix + k * cols + k;
+            int stride = 1;
             float norm;
-            cublasSnrm2(handle, rows - k, column, 1, &norm);
+            cublasSnrm2(handle, rows - k, column, stride, &norm);
             if (column[0] >= 0)
             {
                 column[0] += norm;
@@ -100,21 +101,20 @@ int main()
             {
                 column[0] -= norm;
             }
-            float alpha = 1.0f / cublasSnrm2(handle, rows - k, column, 1);
-            cublasSscal(handle, rows - k, &alpha, column, 1);
+            float alpha = 1.0f / cublasSnrm2(handle, rows - k, column, stride, NULL);
+            cublasSscal(handle, rows - k, &alpha, column, stride);
         }
+
+        // Copy the result back to the host
+        cudaMemcpy(host_matrix, device_matrix, matrix_size, cudaMemcpyDeviceToHost);
+
+        printf("Q matrix:\n");
+        printMatrix(host_matrix, rows, cols);
+
+        // Clean up
+        cudaFree(device_matrix);
+        cublasDestroy(handle);
+        free(host_matrix);
+
+        return 0;
     }
-
-    // Copy the result back to the host
-    cudaMemcpy(host_matrix, device_matrix, matrix_size, cudaMemcpyDeviceToHost);
-
-    printf("Q matrix:\n");
-    printMatrix(host_matrix, rows, cols);
-
-    // Clean up
-    cudaFree(device_matrix);
-    cublasDestroy(handle);
-    free(host_matrix);
-
-    return 0;
-}
